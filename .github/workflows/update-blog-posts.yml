@@ -142,19 +142,19 @@ jobs:
 
             // ── README 업데이트 ──────────────────────────────────────
             const linkRows = links.map((l, i) =>
-              `<tr><td><a href="${l.href}"><img src="./link-${i+1}.svg" width="${W}"/></a></td></tr>`
+              `<tr><td><a href="${l.href}"><img src="./link-${i+1}.svg" width="${W}" style="display:block"/></a></td></tr>`
             ).join('\n');
 
             const postRows = posts.map((p, i) =>
-              `<tr><td><a href="${p.link}"><img src="./post-${i+1}.svg" width="${W}"/></a></td></tr>`
+              `<tr><td><a href="${p.link}"><img src="./post-${i+1}.svg" width="${W}" style="display:block"/></a></td></tr>`
             ).join('\n');
 
             const table = `<div align="center">
             <table border="0" cellspacing="0" cellpadding="0">
-            <tr><td><img src="./header.svg" width="${W}"/></td></tr>
+            <tr><td><img src="./header.svg" width="${W}" style="display:block"/></td></tr>
             ${linkRows}
             ${postRows}
-            <tr><td><img src="./footer.svg" width="${W}"/></td></tr>
+            <tr><td><img src="./footer.svg" width="${W}" style="display:block"/></td></tr>
             </table>
             </div>`;
 
