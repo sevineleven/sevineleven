@@ -112,14 +112,17 @@ jobs:
             writeFileSync('terminal.svg', svg.trim());
 
             // ── README 업데이트 ────────────────────────────────────────
-            const readme = `<div align="center">
-
-![terminal](./terminal.svg)
-
-[https://blog.sevin.dev](https://blog.sevin.dev) · [https://sevin.dev](https://sevin.dev)
-
-</div>`;
-            writeFileSync('README.md', readme.trim());
+            const imgLine = '![terminal](./terminal.svg)';
+            const readme = [
+              '<div align="center">',
+              '',
+              imgLine,
+              '',
+              '[https://blog.sevin.dev](https://blog.sevin.dev) \xB7 [https://sevin.dev](https://sevin.dev)',
+              '',
+              '</div>',
+            ].join('\n');
+            writeFileSync('README.md', readme);
 
       - name: Commit if changed
         run: |
