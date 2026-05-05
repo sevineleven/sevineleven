@@ -47,7 +47,6 @@ jobs:
 
             const posts = items.slice(0, 5).map(([, item]) => {
               const title    = item.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '';
-              const link     = item.match(/<link>(.*?)<\/link>/)?.[1] ?? '';
               const date     = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? '';
               const category = item.match(/<category><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '기타';
               const d = new Date(date);
@@ -56,25 +55,23 @@ jobs:
               const color = CATEGORY_COLORS[category] ?? '#7a7a90';
               const maxLen = 28;
               const display = title.length > maxLen ? title.slice(0, maxLen) + '…' : title;
-              return { title: display, link, dateStr, category, color };
+              return { title: display, dateStr, category, color };
             });
 
             const W = 580, ROW = 28, TITLE_X = 190;
 
-            // whoami 섹션
             const whoamiLines = [
-              { key: 'name',  val: 'parksevin' },
-              { key: 'role',  val: 'backend engineer' },
-              { key: 'stack', val: 'Spring Boot · Java · MySQL · Redis' },
-              { key: 'blog',  val: 'blog.sevin.dev' },
-              { key: 'web',   val: 'sevin.dev' },
+              { key: 'name', val: 'parksevin',         color: '#e0e0e6' },
+              { key: 'role', val: 'backend developer',  color: '#e0e0e6' },
+              { key: 'blog', val: 'blog.sevin.dev',     color: '#5aacf0' },
+              { key: 'web',  val: 'sevin.dev',          color: '#3dd68c' },
             ];
             const WHOAMI_START_Y = 66;
             const WHOAMI_ROW = 22;
             const whoamiSvg = whoamiLines.map((l, i) => {
               const y = WHOAMI_START_Y + i * WHOAMI_ROW;
-              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#5aacf0">${l.key}</text>
-              <text x="112" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${l.val}</text>`;
+              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#56566a">${l.key}</text>
+              <text x="100" y="${y}" font-family="monospace" font-size="12" fill="${l.color}">${l.val}</text>`;
             }).join('\n');
 
             const DIV_Y  = WHOAMI_START_Y + whoamiLines.length * WHOAMI_ROW + 12;
