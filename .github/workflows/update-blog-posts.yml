@@ -59,19 +59,36 @@ jobs:
               return { title: display, link, dateStr, category, color };
             });
 
-            const W = 580, ROW = 28;
-            const H = 46 + 44 + posts.length * ROW + 20;
+            const W = 580, ROW = 28, TITLE_X = 190;
 
-            // 카테고리 고정 너비: x=38 시작, 타이틀 항상 x=190 시작
-            const TITLE_X = 190;
-            const rows = posts.map((p, i) => {
-              const y = 90 + i * ROW;
-              return `
-                <text x="22" y="${y}" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
-                <text x="38" y="${y}" font-family="monospace" font-size="12" fill="${p.color}">[${p.category}]</text>
-                <text x="${TITLE_X}" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${p.title}</text>
-                <text x="${W - 18}" y="${y}" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">${p.dateStr}</text>`;
-            }).join('');
+            // whoami 섹션
+            const whoamiLines = [
+              { key: 'name',  val: 'parksevin' },
+              { key: 'role',  val: 'backend engineer' },
+              { key: 'stack', val: 'Spring Boot · Java · MySQL · Redis' },
+              { key: 'blog',  val: 'blog.sevin.dev' },
+              { key: 'web',   val: 'sevin.dev' },
+            ];
+            const WHOAMI_START_Y = 66;
+            const WHOAMI_ROW = 22;
+            const whoamiSvg = whoamiLines.map((l, i) => {
+              const y = WHOAMI_START_Y + i * WHOAMI_ROW;
+              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#5aacf0">${l.key}</text>
+              <text x="112" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${l.val}</text>`;
+            }).join('\n');
+
+            const DIV_Y  = WHOAMI_START_Y + whoamiLines.length * WHOAMI_ROW + 12;
+            const CMD_Y  = DIV_Y + 28;
+            const POST_Y = CMD_Y + 28;
+            const H      = POST_Y + posts.length * ROW + 18;
+
+            const postSvg = posts.map((p, i) => {
+              const y = POST_Y + i * ROW;
+              return `<text x="22" y="${y}" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
+              <text x="38" y="${y}" font-family="monospace" font-size="12" fill="${p.color}">[${p.category}]</text>
+              <text x="${TITLE_X}" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${p.title}</text>
+              <text x="${W - 18}" y="${y}" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">${p.dateStr}</text>`;
+            }).join('\n');
 
             const svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
               <rect width="${W}" height="${H}" rx="10" fill="#0f0f12"/>
@@ -81,10 +98,14 @@ jobs:
               <circle cx="18" cy="19" r="5" fill="#ff5f57"/>
               <circle cx="36" cy="19" r="5" fill="#ffbd2e"/>
               <circle cx="54" cy="19" r="5" fill="#28ca41"/>
-              <text x="${W/2}" y="24" font-family="monospace" font-size="11" fill="#56566a" text-anchor="middle">sevineleven@dev — ~/blog</text>
-              <text x="22" y="66" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
-              <text x="36" y="66" font-family="monospace" font-size="12" fill="#56566a">cat recent-posts.md</text>
-              ${rows}
+              <text x="${W/2}" y="24" font-family="monospace" font-size="11" fill="#56566a" text-anchor="middle">sevineleven@dev — ~</text>
+              <text x="22" y="54" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
+              <text x="36" y="54" font-family="monospace" font-size="12" fill="#56566a">whoami</text>
+              ${whoamiSvg}
+              <rect x="22" y="${DIV_Y}" width="${W - 44}" height="1" fill="#272730"/>
+              <text x="22" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
+              <text x="36" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#56566a">cat recent-posts.md</text>
+              ${postSvg}
             </svg>`;
 
             const { writeFileSync } = require('fs');
