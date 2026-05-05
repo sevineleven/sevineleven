@@ -16,7 +16,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fetch RSS and generate SVGs
+      - name: Fetch RSS and generate SVG
         uses: actions/github-script@v7
         with:
           script: |
@@ -48,7 +48,6 @@ jobs:
 
             const posts = items.slice(0, 5).map(([, item]) => {
               const title    = item.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '';
-              const link     = item.match(/<link>(.*?)<\/link>/)?.[1] ?? '';
               const date     = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? '';
               const category = item.match(/<category><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '기타';
               const d = new Date(date);
@@ -57,37 +56,47 @@ jobs:
               const color = CATEGORY_COLORS[category] ?? '#7a7a90';
               const maxLen = 28;
               const display = title.length > maxLen ? title.slice(0, maxLen) + '…' : title;
-              return { title: display, link, dateStr, category, color };
+              return { title: display, dateStr, category, color };
             });
 
             const W = 580;
             const BG = '#0f0f12';
             const TITLE_X = 190;
 
-            // ── header.svg ──────────────────────────────────────────
+            // ── 치수 계산 ──────────────────────────────────────────────
+            const TITLEBAR_H = 38;
+            const WHOAMI_Y = 66, WHOAMI_ROW = 22;
             const whoamiLines = [
               { key: 'name', val: 'parksevin',        color: '#e0e0e6' },
               { key: 'role', val: 'backend developer', color: '#e0e0e6' },
               { key: 'blog', val: 'blog.sevin.dev',    color: '#5aacf0' },
               { key: 'web',  val: 'sevin.dev',         color: '#3dd68c' },
             ];
-            const WHOAMI_Y = 66, WHOAMI_ROW = 22;
+            const DIV_Y   = WHOAMI_Y + whoamiLines.length * WHOAMI_ROW + 12;
+            const CMD_Y   = DIV_Y + 28;
+            const POST_START_Y = CMD_Y + 20;
+            const ROW_H   = 32;
+            const FOOTER_PAD = 14;
+            const TOTAL_H = POST_START_Y + posts.length * ROW_H + FOOTER_PAD;
+
+            // ── whoami 텍스트 rows ─────────────────────────────────────
             const whoamiSvg = whoamiLines.map((l, i) => {
               const y = WHOAMI_Y + i * WHOAMI_ROW;
-              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#56566a">${l.key}</text>
-              <text x="100" y="${y}" font-family="monospace" font-size="12" fill="${l.color}">${l.val}</text>`;
-            }).join('\n');
+              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#56566a">${l.key}</text><text x="100" y="${y}" font-family="monospace" font-size="12" fill="${l.color}">${l.val}</text>`;
+            }).join('');
 
-            const DIV_Y = WHOAMI_Y + whoamiLines.length * WHOAMI_ROW + 12;
-            const CMD_Y = DIV_Y + 28;
-            const HEADER_H = CMD_Y + 20;
+            // ── post rows ─────────────────────────────────────────────
+            const postSvg = posts.map((p, i) => {
+              const y = POST_START_Y + i * ROW_H + 22;
+              return `<text x="22" y="${y}" font-family="monospace" font-size="12" fill="#3dd68c">▸</text><text x="38" y="${y}" font-family="monospace" font-size="12" fill="${p.color}">[${p.category}]</text><text x="${TITLE_X}" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${p.title}</text><text x="${W-18}" y="${y}" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">${p.dateStr}</text>`;
+            }).join('');
 
-            // overflow hidden으로 상단만 둥글게 - rect를 아래로 넘침
-            const header = `<svg width="${W}" height="${HEADER_H}" viewBox="0 0 ${W} ${HEADER_H}" xmlns="http://www.w3.org/2000/svg">
-              <rect width="${W}" height="${HEADER_H + 12}" rx="10" fill="${BG}"/>
-              <rect width="${W}" height="38" rx="10" fill="#17171b"/>
+            // ── 단일 terminal.svg ──────────────────────────────────────
+            const svg = `<svg width="${W}" height="${TOTAL_H}" viewBox="0 0 ${W} ${TOTAL_H}" xmlns="http://www.w3.org/2000/svg">
+              <rect width="${W}" height="${TOTAL_H}" rx="10" fill="${BG}"/>
+              <rect width="${W}" height="${TITLEBAR_H}" rx="10" fill="#17171b"/>
               <rect y="28" width="${W}" height="10" fill="#17171b"/>
-              <rect y="38" width="${W}" height="1" fill="#272730"/>
+              <rect y="${TITLEBAR_H}" width="${W}" height="1" fill="#272730"/>
               <circle cx="18" cy="19" r="5" fill="#ff5f57"/>
               <circle cx="36" cy="19" r="5" fill="#ffbd2e"/>
               <circle cx="54" cy="19" r="5" fill="#28ca41"/>
@@ -98,73 +107,24 @@ jobs:
               <rect x="22" y="${DIV_Y}" width="${W-44}" height="1" fill="#272730"/>
               <text x="22" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
               <text x="36" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#56566a">cat recent-posts.md</text>
+              ${postSvg}
             </svg>`;
-            writeFileSync('header.svg', header.trim());
+            writeFileSync('terminal.svg', svg.trim());
 
-            // ── link-N.svg ──────────────────────────────────────────
-            const LINK_H = 28;
-            const links = [
-              { label: 'blog.sevin.dev', href: 'https://blog.sevin.dev', color: '#5aacf0' },
-              { label: 'sevin.dev',      href: 'https://sevin.dev',      color: '#3dd68c' },
-            ];
-            links.forEach((l, i) => {
-              const y = 19;
-              const svg = `<svg width="${W}" height="${LINK_H}" viewBox="0 0 ${W} ${LINK_H}" xmlns="http://www.w3.org/2000/svg">
-                <rect width="${W}" height="${LINK_H}" fill="${BG}"/>
-                <text x="22" y="${y}" font-family="monospace" font-size="12" fill="#56566a">$</text>
-                <text x="36" y="${y}" font-family="monospace" font-size="12" fill="#56566a">open</text>
-                <text x="72" y="${y}" font-family="monospace" font-size="12" fill="${l.color}" text-decoration="underline">${l.label}</text>
-              </svg>`;
-              writeFileSync(`link-${i+1}.svg`, svg.trim());
-            });
+            // ── README 업데이트 ────────────────────────────────────────
+            const readme = `<div align="center">
 
-            // ── post-N.svg ──────────────────────────────────────────
-            const ROW_H = 32;
-            posts.forEach((p, i) => {
-              const y = 22;
-              const row = `<svg width="${W}" height="${ROW_H}" viewBox="0 0 ${W} ${ROW_H}" xmlns="http://www.w3.org/2000/svg">
-                <rect width="${W}" height="${ROW_H}" fill="${BG}"/>
-                <text x="22" y="${y}" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
-                <text x="38" y="${y}" font-family="monospace" font-size="12" fill="${p.color}">[${p.category}]</text>
-                <text x="${TITLE_X}" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${p.title}</text>
-                <text x="${W-18}" y="${y}" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">${p.dateStr}</text>
-              </svg>`;
-              writeFileSync(`post-${i+1}.svg`, row.trim());
-            });
+![terminal](./terminal.svg)
 
-            // ── footer.svg ──────────────────────────────────────────
-            const FOOTER_H = 18;
-            // 위쪽이 잘려 하단 둥근 모서리만 보이도록
-            const footer = `<svg width="${W}" height="${FOOTER_H}" viewBox="0 0 ${W} ${FOOTER_H}" xmlns="http://www.w3.org/2000/svg">
-              <rect y="${-HEADER_H}" width="${W}" height="${HEADER_H + FOOTER_H + 12}" rx="10" fill="${BG}"/>
-            </svg>`;
-            writeFileSync('footer.svg', footer.trim());
+[https://blog.sevin.dev](https://blog.sevin.dev) · [https://sevin.dev](https://sevin.dev)
 
-            // ── README 업데이트 ──────────────────────────────────────
-            const linkRows = links.map((l, i) =>
-              `<tr><td><a href="${l.href}"><img src="./link-${i+1}.svg" width="${W}" style="display:block"/></a></td></tr>`
-            ).join('\n');
-
-            const postRows = posts.map((p, i) =>
-              `<tr><td><a href="${p.link}"><img src="./post-${i+1}.svg" width="${W}" style="display:block"/></a></td></tr>`
-            ).join('\n');
-
-            const table = `<div align="center">
-            <table border="0" cellspacing="0" cellpadding="0">
-            <tr><td><img src="./header.svg" width="${W}" style="display:block"/></td></tr>
-            ${linkRows}
-            ${postRows}
-            <tr><td><img src="./footer.svg" width="${W}" style="display:block"/></td></tr>
-            </table>
-            </div>`;
-
-            const { readFileSync } = require('fs');
-            writeFileSync('README.md', table.trim());
+</div>`;
+            writeFileSync('README.md', readme.trim());
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add header.svg footer.svg link-*.svg post-*.svg README.md
-          git diff --staged --quiet || git commit -m "chore: update terminal svgs"
+          git add terminal.svg README.md
+          git diff --staged --quiet || git commit -m "chore: update terminal svg"
           git push
