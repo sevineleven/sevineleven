@@ -1,5 +1,5 @@
 <div align="center">
 
-![terminal](./terminal.svg)
+<img src="./terminal.svg" width="720"/>
 
 </div>
