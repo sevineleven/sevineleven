@@ -12,22 +12,22 @@
   
     <text x="22" y="90" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
     <text x="38" y="90" font-family="monospace" font-size="12" fill="#f5a742">[사이드프로젝트]</text>
-    <text x="103.7" y="90" font-family="monospace" font-size="12" fill="#e0e0e6">linkat 개발기 - 링크 아카이빙 서비스</text>
+    <text x="190" y="90" font-family="monospace" font-size="12" fill="#e0e0e6">linkat 개발기 - 링크 아카이빙 서비스</text>
     <text x="562" y="90" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">05.04</text>
     <text x="22" y="118" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
     <text x="38" y="118" font-family="monospace" font-size="12" fill="#7a7a90">[일상]</text>
-    <text x="67.2" y="118" font-family="monospace" font-size="12" fill="#e0e0e6">블로그를 시작하며</text>
+    <text x="190" y="118" font-family="monospace" font-size="12" fill="#e0e0e6">블로그를 시작하며</text>
     <text x="562" y="118" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">05.04</text>
     <text x="22" y="146" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
     <text x="38" y="146" font-family="monospace" font-size="12" fill="#b388ff">[프론트엔드]</text>
-    <text x="89.1" y="146" font-family="monospace" font-size="12" fill="#e0e0e6">Next.js App Router 제대로 이해하기</text>
+    <text x="190" y="146" font-family="monospace" font-size="12" fill="#e0e0e6">Next.js App Router 제대로 이해하기</text>
     <text x="562" y="146" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">04.20</text>
     <text x="22" y="174" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
     <text x="38" y="174" font-family="monospace" font-size="12" fill="#5aacf0">[백엔드]</text>
-    <text x="74.5" y="174" font-family="monospace" font-size="12" fill="#e0e0e6">Spring Boot + JPA 삽질 모음</text>
+    <text x="190" y="174" font-family="monospace" font-size="12" fill="#e0e0e6">Spring Boot + JPA 삽질 모음</text>
     <text x="562" y="174" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">04.10</text>
     <text x="22" y="202" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
     <text x="38" y="202" font-family="monospace" font-size="12" fill="#b388ff">[프론트엔드]</text>
-    <text x="89.1" y="202" font-family="monospace" font-size="12" fill="#e0e0e6">TypeScript 유용한 패턴들</text>
+    <text x="190" y="202" font-family="monospace" font-size="12" fill="#e0e0e6">TypeScript 유용한 패턴들</text>
     <text x="562" y="202" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">03.28</text>
 </svg>
