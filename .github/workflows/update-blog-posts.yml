@@ -32,23 +32,41 @@ jobs:
               });
             }
 
+            const CATEGORY_COLORS = {
+              '백엔드':       '5aacf0',
+              '프론트엔드':   'b388ff',
+              '사이드프로젝트': 'f5a742',
+              '인프라':       'f5c542',
+              'CS':           '3dd68c',
+              '기타':         '56566a',
+            };
+
             const xml = await fetchRSS('https://blog.sevin.dev/feed.xml');
 
             const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)];
-            const posts = items.slice(0, 5).map(([, item]) => {
-              const title = item.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '';
-              const link  = item.match(/<link>(.*?)<\/link>/)?.[1] ?? '';
-              const date  = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? '';
+            const rows = items.slice(0, 5).map(([, item]) => {
+              const title    = item.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '';
+              const link     = item.match(/<link>(.*?)<\/link>/)?.[1] ?? '';
+              const date     = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? '';
+              const category = item.match(/<category><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '기타';
+
               const d = new Date(date);
-              const dateStr = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
-              return `- [${title}](${link}) — \`${dateStr}\``;
+              const dateStr = isNaN(d.getTime()) ? '' :
+                `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+
+              const color = CATEGORY_COLORS[category] ?? '56566a';
+              const badge = `https://img.shields.io/badge/${encodeURIComponent(category)}-${color}?style=flat-square`;
+
+              return `<tr><td><img src="${badge}"/></td><td><a href="${link}"><b>${title}</b></a></td><td align="right"><code>${dateStr}</code></td></tr>`;
             }).join('\n');
+
+            const block = `<table>\n${rows}\n</table>`;
 
             const { readFileSync, writeFileSync } = require('fs');
             const readme = readFileSync('README.md', 'utf8');
             const updated = readme.replace(
               /<!-- BLOG-POST-LIST:START -->[\s\S]*?<!-- BLOG-POST-LIST:END -->/,
-              `<!-- BLOG-POST-LIST:START -->\n${posts}\n<!-- BLOG-POST-LIST:END -->`
+              `<!-- BLOG-POST-LIST:START -->\n${block}\n<!-- BLOG-POST-LIST:END -->`
             );
             writeFileSync('README.md', updated);
 
