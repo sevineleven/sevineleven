@@ -2,7 +2,9 @@
 
 # parksevin · 박세빈
 
-writing at [blog.sevin.dev](https://blog.sevin.dev) · portfolio at [sevin.dev](https://sevin.dev)
+writing at [blog.sevin.dev](https://blog.sevin.dev)
+
+portfolio at [sevin.dev](https://sevin.dev)
 
 <br>
 
