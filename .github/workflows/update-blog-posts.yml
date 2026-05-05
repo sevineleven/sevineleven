@@ -113,17 +113,8 @@ jobs:
 
             // ── README 업데이트 ────────────────────────────────────────
             const imgLine = '![terminal](./terminal.svg)';
-            const readme = [
-              '<div align="center">',
-              '',
-              imgLine,
-              '',
-              'blog &rarr; [https://blog.sevin.dev](https://blog.sevin.dev)',
-              '',
-              'portfolio &rarr; [https://sevin.dev](https://sevin.dev)',
-              '',
-              '</div>',
-            ].join('\n');
+            const readme = '<div align="center">\n\n' + imgLine + '\n\n</div>';
+
             writeFileSync('README.md', readme);
 
       - name: Commit if changed
