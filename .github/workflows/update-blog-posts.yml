@@ -59,9 +59,9 @@ jobs:
               return { title: display, dateStr, category, color };
             });
 
-            const W = 580;
+            const W = 720;
             const BG = '#0f0f12';
-            const TITLE_X = 190;
+            const TITLE_X = 220;
 
             // ── 치수 계산 ──────────────────────────────────────────────
             const TITLEBAR_H = 38;
@@ -113,7 +113,7 @@ jobs:
 
             // ── README 업데이트 ────────────────────────────────────────
             const imgLine = '![terminal](./terminal.svg)';
-            const readme = '<div align="center">\n\n' + imgLine + '\n\n</div>';
+            const readme = `<div align="center">\n\n<img src="./terminal.svg" width="${W}"/>\n\n</div>`;
 
             writeFileSync('README.md', readme);
 
