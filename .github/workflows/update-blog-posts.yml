@@ -82,7 +82,7 @@ jobs:
             // ── whoami 텍스트 rows ─────────────────────────────────────
             const whoamiSvg = whoamiLines.map((l, i) => {
               const y = WHOAMI_Y + i * WHOAMI_ROW;
-              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#56566a">${l.key}</text><text x="100" y="${y}" font-family="monospace" font-size="12" fill="${l.color}">${l.val}</text>`;
+              return `<text x="38" y="${y}" font-family="monospace" font-size="12" fill="#56566a">${l.key}</text><text x="140" y="${y}" font-family="monospace" font-size="12" fill="${l.color}">${l.val}</text>`;
             }).join('');
 
             // ── post rows ─────────────────────────────────────────────
