@@ -101,6 +101,23 @@ jobs:
             </svg>`;
             writeFileSync('header.svg', header.trim());
 
+            // ── link-N.svg ──────────────────────────────────────────
+            const LINK_H = 28;
+            const links = [
+              { label: 'blog.sevin.dev', href: 'https://blog.sevin.dev', color: '#5aacf0' },
+              { label: 'sevin.dev',      href: 'https://sevin.dev',      color: '#3dd68c' },
+            ];
+            links.forEach((l, i) => {
+              const y = 19;
+              const svg = `<svg width="${W}" height="${LINK_H}" viewBox="0 0 ${W} ${LINK_H}" xmlns="http://www.w3.org/2000/svg">
+                <rect width="${W}" height="${LINK_H}" fill="${BG}"/>
+                <text x="22" y="${y}" font-family="monospace" font-size="12" fill="#56566a">$</text>
+                <text x="36" y="${y}" font-family="monospace" font-size="12" fill="#56566a">open</text>
+                <text x="72" y="${y}" font-family="monospace" font-size="12" fill="${l.color}" text-decoration="underline">${l.label}</text>
+              </svg>`;
+              writeFileSync(`link-${i+1}.svg`, svg.trim());
+            });
+
             // ── post-N.svg ──────────────────────────────────────────
             const ROW_H = 32;
             posts.forEach((p, i) => {
@@ -124,6 +141,10 @@ jobs:
             writeFileSync('footer.svg', footer.trim());
 
             // ── README 업데이트 ──────────────────────────────────────
+            const linkRows = links.map((l, i) =>
+              `<tr><td><a href="${l.href}"><img src="./link-${i+1}.svg" width="${W}"/></a></td></tr>`
+            ).join('\n');
+
             const postRows = posts.map((p, i) =>
               `<tr><td><a href="${p.link}"><img src="./post-${i+1}.svg" width="${W}"/></a></td></tr>`
             ).join('\n');
@@ -131,6 +152,7 @@ jobs:
             const table = `<div align="center">
             <table border="0" cellspacing="0" cellpadding="0">
             <tr><td><img src="./header.svg" width="${W}"/></td></tr>
+            ${linkRows}
             ${postRows}
             <tr><td><img src="./footer.svg" width="${W}"/></td></tr>
             </table>
@@ -143,6 +165,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add header.svg footer.svg post-*.svg README.md
+          git add header.svg footer.svg link-*.svg post-*.svg README.md
           git diff --staged --quiet || git commit -m "chore: update terminal svgs"
           git push
