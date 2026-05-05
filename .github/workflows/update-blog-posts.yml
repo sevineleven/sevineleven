@@ -2,8 +2,8 @@ name: Update Blog Posts
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 매일 UTC 00:00 (KST 09:00)
-  workflow_dispatch:        # 수동 실행 가능
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -16,7 +16,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Fetch RSS and update README
+      - name: Fetch RSS and generate SVG
         uses: actions/github-script@v7
         with:
           script: |
@@ -33,46 +33,64 @@ jobs:
             }
 
             const CATEGORY_COLORS = {
-              '백엔드':       '5aacf0',
-              '프론트엔드':   'b388ff',
-              '사이드프로젝트': 'f5a742',
-              '인프라':       'f5c542',
-              'CS':           '3dd68c',
-              '기타':         '56566a',
+              '백엔드':        '#5aacf0',
+              '프론트엔드':    '#b388ff',
+              '사이드프로젝트':'#f5a742',
+              '인프라':        '#f5c542',
+              'CS':            '#3dd68c',
+              '일상':          '#7a7a90',
+              '기타':          '#7a7a90',
             };
 
             const xml = await fetchRSS('https://blog.sevin.dev/feed.xml');
-
             const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)];
-            const rows = items.slice(0, 5).map(([, item]) => {
+
+            const posts = items.slice(0, 5).map(([, item]) => {
               const title    = item.match(/<title><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '';
               const link     = item.match(/<link>(.*?)<\/link>/)?.[1] ?? '';
               const date     = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? '';
               const category = item.match(/<category><!\[CDATA\[(.*?)\]\]>/)?.[1] ?? '기타';
-
               const d = new Date(date);
               const dateStr = isNaN(d.getTime()) ? '' :
-                `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+                `${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+              const color = CATEGORY_COLORS[category] ?? '#7a7a90';
+              const maxLen = 36;
+              const display = title.length > maxLen ? title.slice(0, maxLen) + '…' : title;
+              return { title: display, link, dateStr, category, color };
+            });
 
-              const color = CATEGORY_COLORS[category] ?? '56566a';
-              const badge = `https://img.shields.io/badge/${encodeURIComponent(category)}-${color}?style=flat-square`;
+            const W = 580, ROW = 28;
+            const H = 46 + 44 + posts.length * ROW + 20;
 
-              return `<tr><td><img src="${badge}"/></td><td><a href="${link}"><b>${title}</b></a></td><td align="right"><code>${dateStr}</code></td></tr>`;
-            }).join('\n');
+            const rows = posts.map((p, i) => {
+              const y = 90 + i * ROW;
+              return `
+                <text x="22" y="${y}" font-family="monospace" font-size="12" fill="#3dd68c">▸</text>
+                <text x="38" y="${y}" font-family="monospace" font-size="12" fill="${p.color}">[${p.category}]</text>
+                <text x="${38 + (p.category.length + 2) * 7.3}" y="${y}" font-family="monospace" font-size="12" fill="#e0e0e6">${p.title}</text>
+                <text x="${W - 18}" y="${y}" font-family="monospace" font-size="11" fill="#56566a" text-anchor="end">${p.dateStr}</text>`;
+            }).join('');
 
-            const block = `<table>\n${rows}\n</table>`;
+            const svg = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+              <rect width="${W}" height="${H}" rx="10" fill="#0f0f12"/>
+              <rect width="${W}" height="38" rx="10" fill="#17171b"/>
+              <rect y="28" width="${W}" height="10" fill="#17171b"/>
+              <rect y="38" width="${W}" height="1" fill="#272730"/>
+              <circle cx="18" cy="19" r="5" fill="#ff5f57"/>
+              <circle cx="36" cy="19" r="5" fill="#ffbd2e"/>
+              <circle cx="54" cy="19" r="5" fill="#28ca41"/>
+              <text x="${W/2}" y="24" font-family="monospace" font-size="11" fill="#56566a" text-anchor="middle">sevineleven@dev — ~/blog</text>
+              <text x="22" y="66" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
+              <text x="36" y="66" font-family="monospace" font-size="12" fill="#56566a">cat recent-posts.md</text>
+              ${rows}
+            </svg>`;
 
-            const { readFileSync, writeFileSync } = require('fs');
-            const readme = readFileSync('README.md', 'utf8');
-            const updated = readme.replace(
-              /<!-- BLOG-POST-LIST:START -->[\s\S]*?<!-- BLOG-POST-LIST:END -->/,
-              `<!-- BLOG-POST-LIST:START -->\n${block}\n<!-- BLOG-POST-LIST:END -->`
-            );
-            writeFileSync('README.md', updated);
+            const { writeFileSync } = require('fs');
+            writeFileSync('terminal.svg', svg.trim());
 
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet README.md || (git add README.md && git commit -m "chore: update recent blog posts")
+          git diff --quiet terminal.svg || (git add terminal.svg && git commit -m "chore: update terminal svg")
           git push
