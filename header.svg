@@ -1,0 +1,23 @@
+<svg width="580" height="214" viewBox="0 0 580 214" xmlns="http://www.w3.org/2000/svg">
+  <rect width="580" height="226" rx="10" fill="#0f0f12"/>
+  <rect width="580" height="38" rx="10" fill="#17171b"/>
+  <rect y="28" width="580" height="10" fill="#17171b"/>
+  <rect y="38" width="580" height="1" fill="#272730"/>
+  <circle cx="18" cy="19" r="5" fill="#ff5f57"/>
+  <circle cx="36" cy="19" r="5" fill="#ffbd2e"/>
+  <circle cx="54" cy="19" r="5" fill="#28ca41"/>
+  <text x="290" y="24" font-family="monospace" font-size="11" fill="#56566a" text-anchor="middle">sevineleven@dev — ~</text>
+  <text x="22" y="54" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
+  <text x="36" y="54" font-family="monospace" font-size="12" fill="#56566a">whoami</text>
+  <text x="38" y="66" font-family="monospace" font-size="12" fill="#56566a">name</text>
+  <text x="100" y="66" font-family="monospace" font-size="12" fill="#e0e0e6">parksevin</text>
+<text x="38" y="88" font-family="monospace" font-size="12" fill="#56566a">role</text>
+  <text x="100" y="88" font-family="monospace" font-size="12" fill="#e0e0e6">backend developer</text>
+<text x="38" y="110" font-family="monospace" font-size="12" fill="#56566a">blog</text>
+  <text x="100" y="110" font-family="monospace" font-size="12" fill="#5aacf0">blog.sevin.dev</text>
+<text x="38" y="132" font-family="monospace" font-size="12" fill="#56566a">web</text>
+  <text x="100" y="132" font-family="monospace" font-size="12" fill="#3dd68c">sevin.dev</text>
+  <rect x="22" y="166" width="536" height="1" fill="#272730"/>
+  <text x="22" y="194" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
+  <text x="36" y="194" font-family="monospace" font-size="12" fill="#56566a">cat recent-posts.md</text>
+</svg>
