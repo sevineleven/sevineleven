@@ -34,13 +34,13 @@ jobs:
             }
 
             const CATEGORY_COLORS = {
-              '백엔드':        '#5aacf0',
-              '프론트엔드':    '#b388ff',
-              '사이드프로젝트':'#f5a742',
+              '백엔드':        '#3dd68c',
+              '프론트엔드':    '#5aacf0',
+              '사이드프로젝트':'#f4a23a',
               '인프라':        '#f5c542',
               'CS':            '#3dd68c',
-              '일상':          '#7a7a90',
-              '기타':          '#7a7a90',
+              '일상':          '#b388ff',
+              '기타':          '#56566a',
             };
 
             const xml = await fetchRSS('https://blog.sevin.dev/feed.xml');
@@ -65,7 +65,7 @@ jobs:
 
             // ── 치수 계산 ──────────────────────────────────────────────
             const TITLEBAR_H = 38;
-            const WHOAMI_Y = 66, WHOAMI_ROW = 22;
+            const WHOAMI_Y = 80, WHOAMI_ROW = 22;
             const whoamiLines = [
               { key: 'name', val: 'parksevin',        color: '#e0e0e6' },
               { key: 'role', val: 'backend developer', color: '#e0e0e6' },
@@ -102,11 +102,11 @@ jobs:
               <circle cx="54" cy="19" r="5" fill="#28ca41"/>
               <text x="${W/2}" y="24" font-family="monospace" font-size="11" fill="#56566a" text-anchor="middle">sevineleven@dev — ~</text>
               <text x="22" y="54" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
-              <text x="36" y="54" font-family="monospace" font-size="12" fill="#56566a">whoami</text>
+              <text x="36" y="54" font-family="monospace" font-size="12" fill="#e0e0e6">whoami</text>
               ${whoamiSvg}
               <rect x="22" y="${DIV_Y}" width="${W-44}" height="1" fill="#272730"/>
               <text x="22" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#3dd68c">$</text>
-              <text x="36" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#56566a">cat recent-posts.md</text>
+              <text x="36" y="${CMD_Y}" font-family="monospace" font-size="12" fill="#e0e0e6">cat recent-posts.md</text>
               ${postSvg}
             </svg>`;
             writeFileSync('terminal.svg', svg.trim());
